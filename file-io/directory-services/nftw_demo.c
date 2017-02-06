@@ -4,6 +4,7 @@
 #include<stdlib.h>
 #include<getopt.h>
 #include<errno.h>
+#include<string.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -22,8 +23,11 @@ int main(int argc, char *argv[]){
 	char *directory_name=NULL;
 	
 	if(argc<2){
-		directory_name=".";
+	    directory_name=(char*)calloc(1,10);
+	    strcpy(directory_name,".");
+		//directory_name=".";
 	}
+
 	static struct option long_options[]={
 		{"version"  ,no_argument,NULL,'v'},
 		{"help"     ,no_argument,NULL,'h'},
@@ -53,9 +57,10 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	if(recursive_flag==FALSE){
+	if(recursive_flag==FALSE&&directory_name==NULL){
 		directory_name=argv[1];
 	}
+		printf("Directory:%s\n",directory_name);
 		flags|=FTW_ACTIONRETVAL;
 	if(nftw(directory_name,file_callback,20,flags)==-1){
 		fprintf(stderr,"nftw failed. Error:%s",strerror(errno));
@@ -76,18 +81,12 @@ void print_version(){
 }
 
 int file_callback(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
-
+    
 	if(typeflag==FTW_D && recursive_flag==TRUE){
-		printf("DIR %s\n",fpath);
-	}else if(recursive_flag==FALSE)
-		return FTW_SKIP_SUBTREE;
+		printf("FC: DIR %s\n",fpath);
+	}
 	else
-		printf("%s\n",fpath);
+		printf("FC: %s\n",fpath);
 
 	return FTW_CONTINUE;
 }
-
-
-
-
-
