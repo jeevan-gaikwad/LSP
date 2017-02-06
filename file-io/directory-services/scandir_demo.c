@@ -16,7 +16,7 @@
 int  c_extn_filter(const struct dirent *dir_entry);
 int  file_name_length_comparator(const struct dirent ** dirent1,const struct dirent ** dirent2);
 void print_usage(char *program_name);
-void display_entries(const struct dirent **namelist,int no_of_entries);
+void display_entries(struct dirent **namelist,int no_of_entries);
 void cleanup(struct dirent **namelist,int no_of_entries);
 
 char *file_extension=NULL;
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 	file_extension=argv[1];
 	char *directory_name=argv[2];
 
-	no_of_entries=get_directory_entries(directory_name,namelist);	
+	no_of_entries=get_directory_entries(directory_name,&namelist);	
 
 	display_entries(namelist,no_of_entries);
 
@@ -42,9 +42,9 @@ int main(int argc, char* argv[])
 	cleanup(namelist,no_of_entries);	
 	exit(EXIT_SUCCESS);
 }
-int get_directory_entries(const char *directory_name,struct dirent **namelist){
+int get_directory_entries(const char *directory_name,struct dirent ***namelist){
 
-	int no_of_entries=scandir(directory_name,&namelist,c_extn_filter,file_name_length_comparator);
+	int no_of_entries=scandir(directory_name,namelist,c_extn_filter,file_name_length_comparator);
 
 	if(no_of_entries==-1){
 		fprintf(stderr,"failed to read %s for files with extenison %s\n",directory_name,file_extension);
@@ -87,7 +87,7 @@ void print_usage(char *program_name)
 	printf("Usage: %s <file extension> <directory name>\n",program_name);
 }
 
-void display_entries(const struct dirent **namelist,int no_of_entries){
+void display_entries( struct dirent **namelist,int no_of_entries){
 	int i;
 	for(i=0;i<no_of_entries;i++){
 		printf("%s\n",namelist[i]->d_name);
@@ -96,8 +96,10 @@ void display_entries(const struct dirent **namelist,int no_of_entries){
 
 void cleanup(struct dirent **namelist,int no_of_entries){
 	int i;
+	/*
 	for(i=0;i<no_of_entries;i++){
 		free(namelist[i]);
 	}
+	*/
 	free(namelist);
 }
