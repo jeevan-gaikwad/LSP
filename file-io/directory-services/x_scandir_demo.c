@@ -70,17 +70,16 @@ int c_extn_filter(const struct dirent *dir_entry){
 }
 
 int file_name_length_comparator(const struct dirent ** dirent1,const struct dirent ** dirent2){
-
+	
 	int f_name_len1=strlen((*dirent1)->d_name);
 	int f_name_len2=strlen((*dirent2)->d_name);
-
 	if(f_name_len1 > f_name_len2)
 		return 1;
 	else if(f_name_len1 < f_name_len2)
 		return -1;
 	else
 		return 0;
-
+	
 }
 
 void print_usage(char *program_name)
@@ -96,11 +95,6 @@ void display_entries( struct dirent **namelist,int no_of_entries){
 }
 
 void cleanup(struct dirent **namelist,int no_of_entries){
-	int i;
-	/*
-	for(i=0;i<no_of_entries;i++){
-		free(namelist[i]);
-	}
-	*/
+	//It is advised to not to free memory allocated by readdir in x_scandir.So just free array allocated by realloc in x_scandir
 	free(namelist);
 }
