@@ -85,6 +85,8 @@ int file_callback(const char *fpath, const struct stat *sb, int typeflag, struct
 	if(typeflag==FTW_D && recursive_flag==TRUE){
 		printf("FC: DIR %s\n",fpath);
 	}
+	else if(typeflag==FTW_D&& strcmp(fpath,".")!=0) //Except current directory, skip other directories if -r is absent
+	    return FTW_SKIP_SUBTREE;
 	else
 		printf("FC: %s\n",fpath);
 
